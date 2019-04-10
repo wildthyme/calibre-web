@@ -83,7 +83,7 @@ from flask_dance.contrib.github import make_github_blueprint, github
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask_dance.consumer import oauth_authorized, oauth_error
 from sqlalchemy.orm.exc import NoResultFound
-from oauth import OAuthBackend
+from oauth import OAuthStorage
 try:
     from googleapiclient.errors import HttpError
 except ImportError:
@@ -4014,18 +4014,14 @@ github_blueprint = make_github_blueprint(
 google_blueprint = make_google_blueprint(
     client_id=config.config_google_oauth_client_id,
     client_secret=config.config_google_oauth_client_secret,
-    redirect_to="google_login",
-    scope=[
-        "https://www.googleapis.com/auth/plus.me",
-        "https://www.googleapis.com/auth/userinfo.email",
-    ]
+    redirect_to="google_login"
 )
 
 app.register_blueprint(google_blueprint, url_prefix="/login")
 app.register_blueprint(github_blueprint, url_prefix='/login')
 
-github_blueprint.backend = OAuthBackend(ub.OAuth, ub.session, user=current_user, user_required=True)
-google_blueprint.backend = OAuthBackend(ub.OAuth, ub.session, user=current_user, user_required=True)
+github_blueprint.storage = OAuthStorage(ub.OAuth, ub.session, user=current_user, user_required=True)
+google_blueprint.storage = OAuthStorage(ub.OAuth, ub.session, user=current_user, user_required=True)
 
 
 if config.config_use_github_oauth:

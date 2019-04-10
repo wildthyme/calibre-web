@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from flask import session
-from flask_dance.consumer.backend.sqla import SQLAlchemyBackend, first, _get_real_user
+from flask_dance.consumer.storage.sqla import SQLAlchemyStorage, first, _get_real_user
 from sqlalchemy.orm.exc import NoResultFound
 
 
-class OAuthBackend(SQLAlchemyBackend):
+class OAuthStorage(SQLAlchemyStorage):
     """
     Stores and retrieves OAuth tokens using a relational database through
     the `SQLAlchemy`_ ORM.
@@ -16,7 +16,7 @@ class OAuthBackend(SQLAlchemyBackend):
     def __init__(self, model, session,
                  user=None, user_id=None, user_required=None, anon_user=None,
                  cache=None):
-        super(OAuthBackend, self).__init__(model, session, user, user_id, user_required, anon_user, cache)
+        super(OAuthStorage, self).__init__(model, session, user, user_id, user_required, anon_user, cache)
 
     def get(self, blueprint, user=None, user_id=None):
         if blueprint.name + '_oauth_token' in session and session[blueprint.name + '_oauth_token'] != '':
